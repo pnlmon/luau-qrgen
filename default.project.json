@@ -1,0 +1,12 @@
+{
+	"name": "luau-qrgen",
+	"tree": {
+		"$className": "Folder",
+		"qrgen": {
+			"$path": "src",
+			"Packages": {
+				"$path": "roblox_packages"
+			}
+		}
+	}
+}

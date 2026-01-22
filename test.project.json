@@ -1,0 +1,17 @@
+{
+	"name": "luau-qrgen",
+	"tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "luau-qrgen": {
+                "$className": "Folder",
+                "qrgen": {
+                    "$path": "src",
+                    "Packages": {
+                        "$path": "roblox_packages"
+                    }
+                }
+            }
+        }
+	}
+}

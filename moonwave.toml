@@ -1,0 +1,66 @@
+title = "luau-qrgen"
+gitRepoUrl = "https://github.com/YOUR_USERNAME/luau-qrgen"
+gitSourceBranch = "main"
+
+changelog = true
+
+classOrder = [
+    "qrgen",
+    "QrCode",
+    "QrSegment",
+    "svgRenderer",
+    "frameRenderer",
+    "Types"
+]
+
+[docusaurus]
+onBrokenLinks = "warn"
+onBrokenMarkdownLinks = "warn"
+tagline = "QR code generation for Luau and Roblox"
+
+[home]
+enabled = true
+includeReadme = false
+
+[[home.features]]
+title = "QR Code Model 2"
+description = "Versions 1-40, all error correction levels, all encoding modes."
+
+[[home.features]]
+title = "Roblox Frame Renderer"
+description = "Greedy row batching for fewer Frame instances."
+
+[[home.features]]
+title = "Strict Typing"
+description = "Full Luau type annotations."
+
+[[navbar.items]]
+href = "https://github.com/pnloth/luau-qrgen"
+label = "GitHub"
+position = "right"
+
+[footer]
+style = "dark"
+copyright = "Copyright © 2026. Built with Moonwave and Docusaurus."
+
+[[footer.links]]
+title = "Documentation"
+
+[[footer.links.items]]
+label = "Getting Started"
+href = "/docs/intro"
+
+[[footer.links.items]]
+label = "API Reference"
+href = "/api/qrgen"
+
+[[footer.links]]
+title = "Community"
+
+[[footer.links.items]]
+label = "GitHub"
+href = "https://github.com/pnloth/luau-qrgen"
+
+[[footer.links.items]]
+label = "Issues"
+href = "https://github.com/pnloth/luau-qrgen/issues"

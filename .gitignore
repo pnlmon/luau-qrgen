@@ -1,0 +1,42 @@
+# Rojo
+sourcemap.json
+default.project.json.out
+
+# Dependencies
+lune_packages
+luau_packages
+roblox_packages
+
+# Build outputs
+build/
+.out/
+*.robloxm
+*.rbxm
+*.rbxl
+
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pesde
+.pesde/
+
+# Lune
+.lune/
+.typedefs/
+
+# Python venv
+.venv/
+venv/
+
+# Local testing
+test_output.json
+qrcode.svg
+qrcode_custom.svg
+tests/test_output/
+test_output/

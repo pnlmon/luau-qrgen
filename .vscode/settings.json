@@ -1,0 +1,24 @@
+{
+	"[lua][luau]": {
+		"editor.defaultFormatter": "JohnnyMorganz.stylua"
+	},
+	"luau-lsp.diagnostics.strictDatamodelTypes": true,
+	"luau-lsp.types.robloxSecurityLevel": "LocalUserSecurity",
+	"luau-lsp.diagnostics.workspace": false,
+	"luau-lsp.diagnostics.includeDependents": true,
+	"luau-lsp.sourcemap.autogenerate": true,
+	"files.eol": "\n",
+	"luau-lsp.ignoreGlobs": [
+		"luau_packages/**",
+		"lune_packages/**",
+		"roblox_packages/**",
+		".pesde/**"
+	],
+	"luau-lsp.completion.imports.ignoreGlobs": [
+		"luau_packages/**",
+		"lune_packages/**",
+		"roblox_packages/**",
+		".pesde/**"
+	],
+	"stylua.targetReleaseVersion": "latest"
+}
