@@ -56,6 +56,34 @@ local function assertNotNil<T>(value: T?, message: string?): boolean
 	end
 end
 
+local function matricesEqual(a: QrCodeType, b: QrCodeType): boolean
+	if a.size ~= b.size then
+		return false
+	end
+
+	for y = 0, a.size - 1 do
+		for x = 0, a.size - 1 do
+			if a:getModule(x, y) ~= b:getModule(x, y) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+local function verifyTextOutput(qr: QrCodeType, text: string, ecl: types.ErrorCorrectionLevel): boolean
+	local segs = qrSegment.makeSegments(text)
+	local segQr = qrCode.encodeSegments(segs, ecl, 1, 40, -1, true)
+	return assertNotNil(segQr) and matricesEqual(qr, segQr)
+end
+
+local function verifyBinaryOutput(qr: QrCodeType, data: { number }, ecl: types.ErrorCorrectionLevel): boolean
+	local seg = qrSegment.makeBytes(data)
+	local segQr = qrCode.encodeSegments({ seg }, ecl, 1, 40, -1, true)
+	return assertNotNil(segQr) and matricesEqual(qr, segQr)
+end
+
 -- bit buffer tests
 print("\n=== bit buffer tests ===")
 
@@ -151,22 +179,35 @@ print("\n=== qr code generation tests ===")
 
 test("qrCode: encodeText simple", function()
 	local qr = qrCode.encodeText("Hello", types.ecc.medium)
-	return assertNotNil(qr) and qr.version >= 1 and qr.version <= 40 and qr.size == 17 + qr.version * 4
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version >= 1 and qr.version <= 40 and qr.size == 17 + qr.version * 4
+		and verifyTextOutput(qr, "Hello", types.ecc.medium)
 end)
 
 test("qrCode: encodeText numeric", function()
 	local qr = qrCode.encodeText("12345", types.ecc.low)
-	return assertNotNil(qr) and qr.version == 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version == 1 and verifyTextOutput(qr, "12345", types.ecc.low)
 end)
 
 test("qrCode: encodeText alphanumeric", function()
 	local qr = qrCode.encodeText("HELLO WORLD", types.ecc.medium)
-	return assertNotNil(qr) and qr.version >= 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version >= 1 and verifyTextOutput(qr, "HELLO WORLD", types.ecc.medium)
 end)
 
 test("qrCode: encodeText longer text", function()
 	local qr = qrCode.encodeText("Hello, World! This is a test of the QR code generator.", types.ecc.medium)
-	return assertNotNil(qr) and qr.version >= 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version >= 1 and verifyTextOutput(qr, "Hello, World! This is a test of the QR code generator.", types.ecc.medium)
 end)
 
 test("qrCode: encodeText all error correction levels", function()
@@ -174,12 +215,33 @@ test("qrCode: encodeText all error correction levels", function()
 	local textM = qrCode.encodeText("Test", types.ecc.medium)
 	local textQ = qrCode.encodeText("Test", types.ecc.quartile)
 	local textH = qrCode.encodeText("Test", types.ecc.high)
-	return assertNotNil(textL) and assertNotNil(textM) and assertNotNil(textQ) and assertNotNil(textH)
+	return assertNotNil(textL)
+		and assertNotNil(textM)
+		and assertNotNil(textQ)
+		and assertNotNil(textH)
+		and verifyTextOutput(textL, "Test", types.ecc.low)
+		and verifyTextOutput(textM, "Test", types.ecc.medium)
+		and verifyTextOutput(textQ, "Test", types.ecc.quartile)
+		and verifyTextOutput(textH, "Test", types.ecc.high)
+end)
+
+test("qrCode: encodeSegments", function()
+	local text = "INVOICE-123456789"
+	local segs = qrSegment.makeSegments(text)
+	local qr = qrCode.encodeSegments(segs, types.ecc.medium, 1, 40, -1, true)
+	local textQr = qrCode.encodeText(text, types.ecc.medium)
+	if not assertNotNil(qr) or not assertNotNil(textQr) then
+		return false
+	end
+	return matricesEqual(qr, textQr) and verifyTextOutput(textQr, text, types.ecc.medium)
 end)
 
 test("qrCode: encodeBinary", function()
 	local qr = qrCode.encodeBinary({ 72, 101, 108, 108, 111 }, types.ecc.medium)
-	return assertNotNil(qr) and qr.version >= 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version >= 1 and verifyBinaryOutput(qr, { 72, 101, 108, 108, 111 }, types.ecc.medium)
 end)
 
 test("qrCode: getModule returns booleans", function()
@@ -193,7 +255,10 @@ test("qrCode: getModule returns booleans", function()
 	local topRight = qr:getModule(qr.size - 1, 0)
 	local bottomLeft = qr:getModule(0, qr.size - 1)
 
-	return type(topLeft) == "boolean" and type(topRight) == "boolean" and type(bottomLeft) == "boolean"
+	return type(topLeft) == "boolean"
+		and type(topRight) == "boolean"
+		and type(bottomLeft) == "boolean"
+		and verifyTextOutput(qr, "Test", types.ecc.medium)
 end)
 
 test("qrCode: finder pattern at top-left", function()
@@ -209,7 +274,7 @@ test("qrCode: finder pattern at top-left", function()
 			return false
 		end
 	end
-	return true
+	return verifyTextOutput(qr, "Test", types.ecc.low)
 end)
 
 test("qrCode: finder pattern at top-right", function()
@@ -224,7 +289,7 @@ test("qrCode: finder pattern at top-right", function()
 			return false
 		end
 	end
-	return true
+	return verifyTextOutput(qr, "Test", types.ecc.low)
 end)
 
 test("qrCode: finder pattern at bottom-left", function()
@@ -239,7 +304,7 @@ test("qrCode: finder pattern at bottom-left", function()
 			return false
 		end
 	end
-	return true
+	return verifyTextOutput(qr, "Test", types.ecc.low)
 end)
 
 -- version selection tests
@@ -247,13 +312,19 @@ print("\n=== version selection tests ===")
 
 test("qrCode: version 1 for short data", function()
 	local qr = qrCode.encodeText("Hi", types.ecc.low)
-	return assertNotNil(qr) and qr.version == 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version == 1 and verifyTextOutput(qr, "Hi", types.ecc.low)
 end)
 
 test("qrCode: larger version for longer data", function()
 	local longText = string.rep("A", 100)
 	local qr = qrCode.encodeText(longText, types.ecc.low)
-	return assertNotNil(qr) and qr.version > 1
+	if not assertNotNil(qr) then
+		return false
+	end
+	return qr.version > 1 and verifyTextOutput(qr, longText, types.ecc.low)
 end)
 
 -- matrix output tests
@@ -274,7 +345,7 @@ test("qrCode: getMatrix returns valid table", function()
 		table.insert(matrix, row)
 	end
 
-	return #matrix == qr.size and #matrix[1] == qr.size
+	return #matrix == qr.size and #matrix[1] == qr.size and verifyTextOutput(qr, "Test", types.ecc.low)
 end)
 
 -- output test qr codes for external verification
