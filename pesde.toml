@@ -1,5 +1,5 @@
 name = "pnloth/luau_qrgen"
-version = "0.1.0"
+version = "0.1.1"
 description = "QR code generation for Lune and Roblox with strict typing and Roblox Frame renderer"
 license = "GPL-3.0"
 authors = ["pnloth"]
