@@ -182,7 +182,9 @@ test("qrCode: encodeText simple", function()
 	if not assertNotNil(qr) then
 		return false
 	end
-	return qr.version >= 1 and qr.version <= 40 and qr.size == 17 + qr.version * 4
+	return qr.version >= 1
+		and qr.version <= 40
+		and qr.size == 17 + qr.version * 4
 		and verifyTextOutput(qr, "Hello", types.ecc.medium)
 end)
 
@@ -207,7 +209,8 @@ test("qrCode: encodeText longer text", function()
 	if not assertNotNil(qr) then
 		return false
 	end
-	return qr.version >= 1 and verifyTextOutput(qr, "Hello, World! This is a test of the QR code generator.", types.ecc.medium)
+	return qr.version >= 1
+		and verifyTextOutput(qr, "Hello, World! This is a test of the QR code generator.", types.ecc.medium)
 end)
 
 test("qrCode: encodeText all error correction levels", function()
